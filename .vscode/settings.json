@@ -1,0 +1,9 @@
+{
+  "files.associations": {
+    "defines.h": "c",
+    "glad.h": "c",
+    "format": "c",
+    "memory.h": "c",
+    "application.h": "c"
+  },
+}
