@@ -6,6 +6,8 @@
     "memory.h": "c",
     "application.h": "c",
     "texture.h": "c",
-    "xiosbase": "c"
+    "xiosbase": "c",
+    "cglm.h": "c",
+    "nuklear_glfw_gl4.h": "c"
   },
 }

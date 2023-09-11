@@ -17,3 +17,5 @@ void game_object_update(application_state* app, game_object* game_object, camera
 void game_object_destroy(game_object* game_object);
 void game_object_texture_load(game_object* game_object, const b8* file_name);
 void game_object_shader_load(game_object* game_object, const b8* vertex_name, const b8* fragment_name);
+
+void game_object_translate(f32 delta, game_object* game_object, vec3 pos, f32 speed);

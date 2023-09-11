@@ -20,7 +20,7 @@ void game_object_update(application_state* app, game_object* game_object, camera
   glm_translate(model, game_object->position);
   dh_shader_set_mat4(game_object->shader, "model", model);
   dh_shader_set_mat4(game_object->shader, "view", view);
-  dh_shader_set_mat4(game_object->shader, "projection", app->projection);
+  dh_shader_set_mat4(game_object->shader, "projection", *app->projection);
   dh_shader_set_vec3(game_object->shader, "sprite_color", game_object->sprite->color);
   dh_sprite_render(game_object->sprite);
 }
@@ -38,4 +38,10 @@ void game_object_texture_load(game_object* game_object, const b8* file_name) {
 
 void game_object_shader_load(game_object* game_object, const b8* vertex_name, const b8* fragment_name) {
   game_object->shader->id = dh_shader_load(vertex_name, fragment_name);
+}
+
+void game_object_translate(f32 delta, game_object* game_object, vec3 pos, f32 speed) {
+  game_object->position[0] += pos[0] * delta * speed;
+  game_object->position[1] += pos[1] * delta * speed;
+  game_object->position[2] += pos[2] * delta * speed;
 }

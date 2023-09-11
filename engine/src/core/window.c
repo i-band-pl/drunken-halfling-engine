@@ -19,6 +19,7 @@ u32 dh_create_window(application_state* app_state) {
     printf("Created GLFW window \n");
   }
   glfwMakeContextCurrent(app_state->platform_window);
+  glfwSwapInterval(0);
 
   if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
     printf("Failed to initialize GLAD\n");
