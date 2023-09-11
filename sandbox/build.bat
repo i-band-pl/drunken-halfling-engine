@@ -2,6 +2,8 @@ REM Build script for sandbox
 @ECHO OFF
 SetLocal EnableDelayedExpansion
 
+xcopy ".\textures" "..\bin\textures" /E /C /I /Q /H /R /K /Y
+
 REM Get a list of all the .c files.
 SET cFilenames=
 FOR /R %%f in (*.c) do (

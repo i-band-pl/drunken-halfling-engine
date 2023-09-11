@@ -4,6 +4,8 @@
     "glad.h": "c",
     "format": "c",
     "memory.h": "c",
-    "application.h": "c"
+    "application.h": "c",
+    "texture.h": "c",
+    "xiosbase": "c"
   },
 }

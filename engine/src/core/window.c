@@ -9,7 +9,7 @@ u32 dh_create_window(application_state* app_state) {
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-  app_state->platform_window = glfwCreateWindow(1200, 700, "windowName", NULL, NULL);
+  app_state->platform_window = glfwCreateWindow(800, 600, "windowName", NULL, NULL);
 
   if (app_state->platform_window == NULL) {
     printf("Failed to create GLFW window \n");
@@ -25,9 +25,9 @@ u32 dh_create_window(application_state* app_state) {
     return -1;
   }
 
-  glViewport(0, 0, 1200, 700);
+  glViewport(0, 0, 800, 600);
 
-  glfwSetFramebufferSizeCallback(app_state->platform_window, framebuffer_size_callback);
+  glfwSetFramebufferSizeCallback(app_state->platform_window, dh_application_framebuffer_callback);
 
   return 0;
 }
@@ -37,9 +37,4 @@ void process_input(GLFWwindow* window) {
     printf("closing \n");
     glfwSetWindowShouldClose(window, TRUE);
   }
-}
-
-void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
-  printf("callback updated \n");
-  glViewport(0, 0, width, height);
 }
