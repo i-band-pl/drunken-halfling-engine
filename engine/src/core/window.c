@@ -9,7 +9,7 @@ u32 dh_create_window(application_state* app_state) {
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-  app_state->platform_window = glfwCreateWindow(800, 600, "windowName", NULL, NULL);
+  app_state->platform_window = glfwCreateWindow(800, 600, app_state->application_name, NULL, NULL);
 
   if (app_state->platform_window == NULL) {
     printf("Failed to create GLFW window \n");

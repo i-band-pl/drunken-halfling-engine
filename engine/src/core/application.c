@@ -26,7 +26,8 @@ i32 frame_count = 0;
 f32 last_frame_time = 0.0f;
 i32 frame_rate = 0;
 
-void dh_application_create(applcation_invoke invoker) {
+void dh_application_create(const char* app_name, applcation_invoke invoker) {
+  app_state.application_name = app_name;
   app_state.delta_time = 0.0f;
   dh_application_init();
   last_frame_time = (f32)glfwGetTime();
@@ -58,6 +59,10 @@ u32 dh_application_init() {
 }
 
 u32 dh_application_run(applcation_invoke render_invoker, applcation_invoke gui_invoker) {
+  b8 buff[100];
+
+  glfwMaximizeWindow(app_state.platform_window);
+
   while (!glfwWindowShouldClose(app_state.platform_window)) {
     f32 current_frame = (f32)glfwGetTime();
     app_state.delta_time = current_frame - last_frame;
@@ -82,6 +87,9 @@ u32 dh_application_run(applcation_invoke render_invoker, applcation_invoke gui_i
       frame_rate = frame_count;
       frame_count = 0;
       last_frame_time = current_frame;
+
+      sprintf(buff, "[OpenGL] %s - %d FPS", app_state.application_name, frame_rate);
+      glfwSetWindowTitle(app_state.platform_window, buff);
     }
   }
 

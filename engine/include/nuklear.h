@@ -7412,6 +7412,7 @@ nk_file_load(const char* path, nk_size* siz, struct nk_allocator *alloc)
     char *buf;
     FILE *fd;
     long ret;
+    errno_t file_error;
 
     NK_ASSERT(path);
     NK_ASSERT(siz);
@@ -7419,8 +7420,11 @@ nk_file_load(const char* path, nk_size* siz, struct nk_allocator *alloc)
     if (!path || !siz || !alloc)
         return 0;
 
-    fd = fopen(path, "rb");
-    if (!fd) return 0;
+
+    file_error = fopen_s(&fd, path, "rb");
+    if(file_error != 0) {
+        return 0;
+    }
     fseek(fd, 0, SEEK_END);
     ret = ftell(fd);
     if (ret < 0) {

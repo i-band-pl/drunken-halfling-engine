@@ -4,6 +4,7 @@
 #include <camera.h>
 #include <input.h>
 #include <nk_defines.h>
+#include <sprite.h>
 #include <string.h>
 #include <test.h>
 
@@ -106,7 +107,7 @@ void update() {
 }
 
 int main() {
-  dh_application_create(start);
+  dh_application_create("halfling client", start);
   dh_application_run(update, render_gui);
   return 0;
 }
