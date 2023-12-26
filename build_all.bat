@@ -9,17 +9,17 @@ CALL build.bat
 POPD
 IF %ERRORLEVEL% NEQ 0 (echo Error:%ERRORLEVEL% && exit)
 
-REM PUSHD sandbox
-REM CALL build.bat
-REM POPD
-REM IF %ERRORLEVEL% NEQ 0 (echo Error:%ERRORLEVEL% && exit)
-
-PUSHD editor
+PUSHD sandbox
 CALL build.bat
 POPD
 IF %ERRORLEVEL% NEQ 0 (echo Error:%ERRORLEVEL% && exit)
 
+REM PUSHD editor
+REM CALL build.bat
+REM POPD
+REM IF %ERRORLEVEL% NEQ 0 (echo Error:%ERRORLEVEL% && exit)
+
 ECHO "All assemblies built successfully."
 
 cd bin
-CALL editor.exe
+CALL sandbox.exe

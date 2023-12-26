@@ -5,4 +5,4 @@
 #include "application.h"
 #include "defines.h"
 
-DHAPI u32 dh_get_key_down(application_state* app_state, int key);
+DHAPI u32 dh_get_key_down(Application* app, int key);

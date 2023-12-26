@@ -3,6 +3,7 @@
 #include <stdio.h>
 
 #include "CGLM/cglm.h"
+#include "core/state_machine.h"
 #include "defines.h"
 #include "window.h"
 
@@ -11,14 +12,17 @@
 
 typedef void (*applcation_invoke)(void);
 
-typedef struct application_state {
-  GLFWwindow* platform_window;
-  const char* application_name;
+typedef struct {
+  GLFWwindow* platformWindow;
+  const char* applicationName;
   mat4* projection;
   i32 height;
   i32 width;
-  f32 delta_time;
-} application_state;
+  f32 deltaTime;
+  StateMachine stateMachine;
+
+  bool isDebug;
+} Application;
 
 DHAPI void dh_application_create(const char* app_name, applcation_invoke invoker);
 u32 dh_application_init();
@@ -29,7 +33,7 @@ DHAPI void dh_projection_get(mat4* proj);
 
 void dh_application_framebuffer_callback(GLFWwindow* window, int width, int height);
 
-DHAPI application_state* dh_get_app();
+DHAPI Application* dh_get_app();
 DHAPI struct nk_context* dh_get_nuklear_context();
 DHAPI struct nk_colorf dh_get_nuklear_bg();
 DHAPI i32 dh_get_frames_per_second();

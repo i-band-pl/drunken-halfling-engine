@@ -7,7 +7,7 @@
 camera cam;
 
 void start() {
-  application_state* app = dh_get_app();
+  Application* app = dh_get_app();
 
   dh_camera_init(&cam);
   dh_camera_translate_pos(&cam, (vec3){0.0f, 0.0f, 3.0f});
@@ -21,7 +21,7 @@ void update() {
 }
 
 void render_gui() {
-  application_state* app = dh_get_app();
+  Application* app = dh_get_app();
 
   dh_editor_update_ui(app);
 }

@@ -8,7 +8,7 @@ f32 calculate_percentage(i32 original_size, i32 percentage) {
   return (original_size * percentage) / 100;
 }
 
-void dh_editor_update_ui(application_state* app) {
+void dh_editor_update_ui(Application* app) {
   struct nk_context* ctx = dh_get_nuklear_context();
   f32 percent_width = calculate_percentage(app->width, 20);
   f32 content_width = calculate_percentage(app->width, 60);

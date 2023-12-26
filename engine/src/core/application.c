@@ -13,35 +13,22 @@
 #include "nuklear.h"
 #include "nuklear_glfw_gl4.h"
 
-static application_state app_state;
+static Application app;
 typedef struct nuklear_data {
   struct nk_context* ctx;
   struct nk_font_atlas* atlas;
   struct nk_colorf bg;
   struct nk_image img;
 } nuklear_data;
+
 static nuklear_data nk_data;
 f32 last_frame = 0.0f;
 i32 frame_count = 0;
 f32 last_frame_time = 0.0f;
 i32 frame_rate = 0;
 
-void dh_application_create(const char* app_name, applcation_invoke invoker) {
-  app_state.application_name = app_name;
-  app_state.delta_time = 0.0f;
-  dh_application_init();
-  last_frame_time = (f32)glfwGetTime();
-  invoker();
-}
-
-u32 dh_application_init() {
-  printf("main init start \n");
-  dh_create_window(&app_state.platform_window);
-  glfwGetFramebufferSize(app_state.platform_window, &app_state.width, &app_state.height);
-  app_state.projection = malloc(sizeof(mat4));
-  dh_projection_update();
-  nk_data.ctx = nk_glfw3_init(app_state.platform_window, NK_GLFW3_INSTALL_CALLBACKS, MAX_VERTEX_BUFFER, MAX_ELEMENT_BUFFER);
-  // set_style(ctx, THEME_BLACK);
+u32 nuklear_init() {
+  nk_data.ctx = nk_glfw3_init(app.platformWindow, NK_GLFW3_INSTALL_CALLBACKS, MAX_VERTEX_BUFFER, MAX_ELEMENT_BUFFER);
   nk_glfw3_font_stash_begin(&nk_data.atlas);
   nk_glfw3_font_stash_end();
   {
@@ -54,33 +41,78 @@ u32 dh_application_init() {
     nk_data.img = nk_image_id(tex_index);
   }
   nk_data.bg.r = 0.10f, nk_data.bg.g = 0.18f, nk_data.bg.b = 0.24f, nk_data.bg.a = 1.0f;
-  printf("main init end \n");
   return 0;
+}
+
+void dh_application_create(const char* app_name, applcation_invoke invoker) {
+  app.applicationName = app_name;
+  app.deltaTime = 0.0f;
+  dh_application_init();
+  last_frame_time = (f32)glfwGetTime();
+  app.isDebug = true;
+  invoker();
+}
+
+void debug_ui() {
+  if (!app.isDebug) return;
+
+  if (nk_begin(
+          nk_data.ctx,
+          "Debug Window",
+          nk_rect(app.width - 400, app.height - 200, 400, 200),
+          NK_WINDOW_BORDER | NK_WINDOW_TITLE)) {
+    nk_text(nk_data.ctx, "Hello World", 11, NK_TEXT_LEFT);
+  }
+  nk_end(nk_data.ctx);
+}
+
+u32 dh_application_init() {
+  dh_create_window(&app.platformWindow);
+  glfwGetFramebufferSize(app.platformWindow, &app.width, &app.height);
+
+  app.projection = malloc(sizeof(mat4));
+  state_machine_init(&app.stateMachine);
+
+  dh_projection_update();
+
+  nuklear_init();
+  return 0;
+}
+
+void app_update() {
+  u32 i = 0;
+  for (i = 0; i < app.stateMachine.actorsSize; i++) {
+    actor_update(app.projection, &app.stateMachine.actors[i], app.stateMachine.mainCamera);
+    // printf("%f %f \n", app.stateMachine.actors[i].position[0], app.stateMachine.actors[i].position[1]);
+    // printf("update [%d] [%d] [%d]", i, app.stateMachine.actorsSize, app.stateMachine.actors[i].texture->height);
+  }
 }
 
 u32 dh_application_run(applcation_invoke render_invoker, applcation_invoke gui_invoker) {
   b8 buff[100];
 
-  glfwMaximizeWindow(app_state.platform_window);
+  glfwMaximizeWindow(app.platformWindow);
 
-  while (!glfwWindowShouldClose(app_state.platform_window)) {
+  while (!glfwWindowShouldClose(app.platformWindow)) {
     f32 current_frame = (f32)glfwGetTime();
-    app_state.delta_time = current_frame - last_frame;
+    app.deltaTime = current_frame - last_frame;
     last_frame = current_frame;
 
     glfwPollEvents();
     nk_glfw3_new_frame();
     gui_invoker();
+    debug_ui();
 
-    process_input(app_state.platform_window);
+    process_input(app.platformWindow);
 
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
+    app_update();
     render_invoker();
 
     nk_glfw3_render(NK_ANTI_ALIASING_ON);
-    glfwSwapBuffers(app_state.platform_window);
+    glfwSwapBuffers(app.platformWindow);
 
     frame_count++;
     if (current_frame - last_frame_time >= 1.0f) {
@@ -88,8 +120,8 @@ u32 dh_application_run(applcation_invoke render_invoker, applcation_invoke gui_i
       frame_count = 0;
       last_frame_time = current_frame;
 
-      sprintf(buff, "[OpenGL] %s - %d FPS", app_state.application_name, frame_rate);
-      glfwSetWindowTitle(app_state.platform_window, buff);
+      sprintf(buff, "[OpenGL] %s - %d FPS", app.applicationName, frame_rate);
+      glfwSetWindowTitle(app.platformWindow, buff);
     }
   }
 
@@ -101,21 +133,21 @@ u32 dh_application_run(applcation_invoke render_invoker, applcation_invoke gui_i
 
 void dh_application_framebuffer_callback(GLFWwindow* window, int width, int height) {
   glViewport(0, 0, width, height);
-  app_state.height = height;
-  app_state.width = width;
+  app.height = height;
+  app.width = width;
   dh_projection_update();
 }
 
 void dh_projection_update() {
-  glm_perspective(45.0f, (float)app_state.width / (float)app_state.height, 0.1f, 100.0f, *app_state.projection);
+  glm_perspective(45.0f, (float)app.width / (float)app.height, 0.1f, 100.0f, *app.projection);
 }
 
 void dh_projection_get(mat4* proj) {
-  proj = app_state.projection;
+  proj = app.projection;
 }
 
-application_state* dh_get_app() {
-  return &app_state;
+Application* dh_get_app() {
+  return &app;
 }
 
 struct nk_context* dh_get_nuklear_context() {

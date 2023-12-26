@@ -1,6 +1,6 @@
 #include "camera.h"
 
-void dh_camera_init(camera* camera) {
+void dh_camera_init(Camera* camera) {
   camera->camera_position[0] = 0.0f;
   camera->camera_position[1] = 0.0f;
   camera->camera_position[2] = 0.0f;
@@ -18,19 +18,19 @@ void dh_camera_init(camera* camera) {
   camera->fov = 45.0f;
 }
 
-void dh_camera_translate_pos(camera* camera, vec3 dest) {
+void dh_camera_translate_pos(Camera* camera, vec3 dest) {
   camera->camera_position[0] += dest[0];
   camera->camera_position[1] += dest[1];
   camera->camera_position[2] += dest[2];
 }
 
-void dh_camera_translate_pos_by_speed(camera* camera, vec3 dest, float speed) {
+void dh_camera_translate_pos_by_speed(Camera* camera, vec3 dest, float speed) {
   camera->camera_position[0] += (dest[0] * speed);
   camera->camera_position[1] += (dest[1] * speed);
   camera->camera_position[2] += (dest[2] * speed);
 }
 
-void dh_camera_translate_normalized(camera* camera, float speed) {
+void dh_camera_translate_normalized(Camera* camera, float speed) {
   vec3 direction = GLM_VEC3_ZERO_INIT;
   glm_vec3_cross(camera->camera_front, camera->camera_up, direction);
   glm_vec3_normalize(direction);
@@ -39,31 +39,31 @@ void dh_camera_translate_normalized(camera* camera, float speed) {
   camera->camera_position[2] += (direction[2] * speed);
 }
 
-void dh_camera_translate_front(camera* camera, vec3 dest) {
+void dh_camera_translate_front(Camera* camera, vec3 dest) {
   camera->camera_front[0] += dest[0];
   camera->camera_front[1] += dest[1];
   camera->camera_front[2] += dest[2];
 }
 
-void dh_camera_translate_up(camera* camera, vec3 dest) {
+void dh_camera_translate_up(Camera* camera, vec3 dest) {
   camera->camera_up[0] += dest[0];
   camera->camera_up[1] += dest[1];
   camera->camera_up[2] += dest[2];
 }
 
-void dh_camera_multiply_pos(camera* camera, float value) {
+void dh_camera_multiply_pos(Camera* camera, float value) {
   camera->camera_position[0] *= value;
   camera->camera_position[1] *= value;
   camera->camera_position[2] *= value;
 }
 
-void dh_camera_multiply_vec3_float_pos(camera* camera, vec3 vector, float value) {
+void dh_camera_multiply_vec3_float_pos(Camera* camera, vec3 vector, float value) {
   camera->camera_position[0] = vector[0] * value;
   camera->camera_position[1] = vector[1] * value;
   camera->camera_position[2] = vector[2] * value;
 }
 
-void dh_camera_get_view_matrix(camera* camera, shader* shader, mat4* view) {
+void dh_camera_get_view_matrix(Camera* camera, shader* shader, mat4* view) {
   glm_mat4_identity(*view);
   glm_vec3_add(camera->camera_position, camera->camera_front, camera->camera_front_offset);
   glm_lookat(camera->camera_position, camera->camera_front_offset, camera->camera_up, *view);

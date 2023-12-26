@@ -2,44 +2,44 @@
 #include <GL/texture.h>
 #include <application.h>
 #include <camera.h>
+#include <components/actor.h>
+#include <data_structures/linked_list.h>
 #include <input.h>
 #include <nk_defines.h>
 #include <sprite.h>
 #include <string.h>
 #include <test.h>
 
-#include "entities/game_object.h"
-
-typedef struct player {
-  game_object* game_object;
-} player;
-player p;
-camera cam;
+typedef struct {
+  Actor* actor;
+} Player;
+Player p;
+Camera cam;
 f32 speed = 5.0f;
 
 void start() {
-  application_state* app = dh_get_app();
+  Application* app = dh_get_app();
+  app->stateMachine.mainCamera = &cam;
 
   dh_camera_init(&cam);
   dh_camera_translate_pos(&cam, (vec3){0.0f, 0.0f, 3.0f});
   dh_camera_translate_front(&cam, (vec3){0.0f, 0.0f, -1.0f});
   dh_camera_translate_up(&cam, (vec3){0.0f, 1.0f, 0.0f});
-
   dh_projection_update();
 
-  p.game_object = malloc(sizeof(game_object));
-  game_object_init(p.game_object);
-  game_object_shader_load(p.game_object, "sprite.vert", "sprite.frag");
-  game_object_texture_load(p.game_object, "gigachad.png");
-  dh_sprite_init(p.game_object->sprite);
+  p.actor = malloc(sizeof(Actor));
+  actor_init(p.actor);
+  actor_texture_load(p.actor, "gigachad.png");
 
-  p.game_object->position[0] = 0.0f;
-  p.game_object->position[1] = 0.0f;
-  p.game_object->position[2] = 0.0f;
+  state_machine_add_actor(&app->stateMachine, &p.actor);
+
+  p.actor->position[0] = 0.0f;
+  p.actor->position[1] = 0.0f;
+  p.actor->position[2] = 0.0f;
 }
 
-void render(application_state* app) {
-  game_object_update(app, p.game_object, &cam);
+void render(Application* app) {
+  // actor_update(app->projection, p.actor, &cam);
 }
 
 void render_gui() {
@@ -88,21 +88,21 @@ void render_gui() {
 }
 
 void update() {
-  application_state* app = dh_get_app();
+  Application* app = dh_get_app();
 
   render(app);
 
   if (dh_get_key_down(app, GLFW_KEY_W)) {
-    game_object_translate(app->delta_time, p.game_object, (vec3){0, 1, 0}, speed);
+    actor_translate(app->deltaTime, &p.actor, (vec3){0, 1, 0}, speed);
   }
   if (dh_get_key_down(app, GLFW_KEY_S)) {
-    game_object_translate(app->delta_time, p.game_object, (vec3){0, -1, 0}, speed);
+    actor_translate(app->deltaTime, &p.actor, (vec3){0, -1, 0}, speed);
   }
   if (dh_get_key_down(app, GLFW_KEY_A)) {
-    game_object_translate(app->delta_time, p.game_object, (vec3){-1, 0.0, 0}, speed);
+    actor_translate(app->deltaTime, &p.actor, (vec3){-1, 0.0, 0}, speed);
   }
   if (dh_get_key_down(app, GLFW_KEY_D)) {
-    game_object_translate(app->delta_time, p.game_object, (vec3){1, 0.0, 0}, speed);
+    actor_translate(app->deltaTime, &p.actor, (vec3){1, 0.0, 0}, speed);
   }
 }
 

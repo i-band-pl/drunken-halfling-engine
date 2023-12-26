@@ -7,4 +7,4 @@
 typedef struct editor_ui {
 } editor_ui;
 
-void dh_editor_update_ui(application_state* app);
+void dh_editor_update_ui(Application* app);

@@ -1,6 +1,6 @@
 #include "window.h"
 
-u32 dh_create_window(application_state* app_state) {
+u32 dh_create_window(Application* app) {
   if (!glfwInit()) {
     printf("Failed to Init GLFW \n");
     return -1;
@@ -9,16 +9,16 @@ u32 dh_create_window(application_state* app_state) {
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-  app_state->platform_window = glfwCreateWindow(800, 600, app_state->application_name, NULL, NULL);
+  app->platformWindow = glfwCreateWindow(800, 600, app->applicationName, NULL, NULL);
 
-  if (app_state->platform_window == NULL) {
+  if (app->platformWindow == NULL) {
     printf("Failed to create GLFW window \n");
     glfwTerminate();
     return -1;
   } else {
     printf("Created GLFW window \n");
   }
-  glfwMakeContextCurrent(app_state->platform_window);
+  glfwMakeContextCurrent(app->platformWindow);
   glfwSwapInterval(0);
 
   if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
@@ -28,7 +28,7 @@ u32 dh_create_window(application_state* app_state) {
 
   glViewport(0, 0, 800, 600);
 
-  glfwSetFramebufferSizeCallback(app_state->platform_window, dh_application_framebuffer_callback);
+  glfwSetFramebufferSizeCallback(app->platformWindow, dh_application_framebuffer_callback);
 
   return 0;
 }
